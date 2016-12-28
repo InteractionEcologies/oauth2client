@@ -645,7 +645,8 @@ class OAuth2Credentials(Credentials):
             return False
 
         now = _UTCNOW()
-        if now >= self.token_expiry:
+        # Truncate off fraction of a second to be aligned with "_expires_in()"
+        if now.replace(microsecond=0) >= self.token_expiry.replace(microsecond=0):
             logger.info('access_token is expired. Now: %s, token_expiry: %s',
                         now, self.token_expiry)
             return True
